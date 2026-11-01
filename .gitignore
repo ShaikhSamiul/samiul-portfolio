@@ -1,0 +1,17 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Dependencies & Build
+node_modules/
+dist/
+dist-ssr/
+
+# Temporary / Agent Scratch
+.taste-skill/
+.DS_Store
+Thumbs.db
+*.local

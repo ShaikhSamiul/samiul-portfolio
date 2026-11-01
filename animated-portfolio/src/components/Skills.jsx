@@ -1,155 +1,261 @@
-import  { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+import { skillsMatrix } from '../data';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const topRow = ["REACT", "NODE.JS", "PYTHON", "FASTAPI", "GSAP", "TAILWIND", "REACT", "NODE.JS", "PYTHON"];
-const bottomRow = ["MONGODB", "EXPRESS", "WEBSOCKETS", "PINECONE", "GEMINI AI", "MONGODB", "EXPRESS", "WEBSOCKETS"];
-
-// The spinning 4-point star divider
-const SparkleDivider = () => (
-  <svg 
-    width="48" height="48" viewBox="0 0 24 24" fill="none" 
-    className="mx-8 text-emerald-500 animate-[spin_6s_linear_infinite]"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M12 2L13.5 10.5L22 12L13.5 13.5L12 22L10.5 13.5L2 12L10.5 10.5L12 2Z" fill="currentColor"/>
-  </svg>
-);
-
 const Skills = () => {
   const containerRef = useRef(null);
+  const cardsGridRef = useRef(null);
+  const tabRefs = useRef([]);
+  const indicatorRef = useRef(null);
+  const isFirstRender = useRef(true);
+  const [activeCategory, setActiveCategory] = useState(0);
+  const activeCategoryRef = useRef(activeCategory);
 
+  useEffect(() => {
+    activeCategoryRef.current = activeCategory;
+  }, [activeCategory]);
+
+  // Imperative, zero-delay physical sliding pill on user click
+  const handleTabChange = (idx) => {
+    if (idx === activeCategory) return;
+    setActiveCategory(idx);
+
+    const targetBtn = tabRefs.current[idx];
+    if (targetBtn && indicatorRef.current) {
+      gsap.to(indicatorRef.current, {
+        x: targetBtn.offsetLeft,
+        y: targetBtn.offsetTop,
+        width: targetBtn.offsetWidth,
+        height: targetBtn.offsetHeight,
+        duration: 0.38,
+        ease: 'power3.out',
+        overwrite: 'auto',
+      });
+    }
+  };
+
+  // Mount-only layout synchronization (never re-runs on tab changes to prevent snapping)
+  useEffect(() => {
+    const syncIndicator = () => {
+      const activeBtn = tabRefs.current[activeCategoryRef.current];
+      if (activeBtn && indicatorRef.current) {
+        gsap.set(indicatorRef.current, {
+          x: activeBtn.offsetLeft,
+          y: activeBtn.offsetTop,
+          width: activeBtn.offsetWidth,
+          height: activeBtn.offsetHeight,
+          opacity: 1,
+        });
+      }
+    };
+
+    // Initial position setup after layout calculation
+    const timer = setTimeout(syncIndicator, 40);
+
+    if (document.fonts) {
+      document.fonts.ready.then(syncIndicator);
+    }
+
+    window.addEventListener('resize', syncIndicator);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', syncIndicator);
+    };
+  }, []);
+
+  // Category switch: Left-to-Right Cascading Cards + Header Crossfade + Signal Scan
   useGSAP(() => {
-    // 1. Store the timelines so we can manipulate their timeScale later
-    const tl1 = gsap.to('.marquee-row-1', {
-      xPercent: -50,
-      repeat: -1,
-      duration: 25,
-      ease: 'none',
-    });
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
-    const tl2 = gsap.fromTo('.marquee-row-2', 
-      { xPercent: -50 },
+    // 1. Category Title & Description subtle cross-fade
+    gsap.fromTo(
+      '.category-header-info',
+      { opacity: 0, y: -8 },
+      { opacity: 1, y: 0, duration: 0.28, ease: 'power2.out' }
+    );
+
+    // 2. Staggered Left-to-Right Cascade for the 4 Skill Cards
+    if (cardsGridRef.current) {
+      const cards = cardsGridRef.current.children;
+      gsap.fromTo(
+        cards,
+        {
+          x: -50,
+          opacity: 0,
+          scale: 0.96,
+        },
+        {
+          x: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.15, // Deliberate, smooth one-by-one cadence across the 4 cards
+          ease: 'power2.out',
+        }
+      );
+    }
+  }, { dependencies: [activeCategory], scope: containerRef });
+
+  // Initial Section Entrance ScrollTriggers
+  useGSAP(() => {
+    // 1. Header split entrance
+    gsap.fromTo(
+      '.skills-header-left',
+      { x: -25, opacity: 0 },
       {
-        xPercent: 0,
-        repeat: -1,
-        duration: 30,
-        ease: 'none',
+        x: 0,
+        opacity: 1,
+        duration: 0.6,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.skills-header-left',
+          start: 'top 94%',
+          once: true,
+        },
       }
     );
 
-    // 2. Velocity-Based "Scroll Warp" Effect
-    let scrollTimeout;
-    ScrollTrigger.create({
-      trigger: document.body,
-      start: "top top",
-      end: "bottom bottom",
-      onUpdate: (self) => {
-        // Get the speed of the scroll
-        const velocity = self.getVelocity();
-        // Convert velocity into a multiplier (ensure it's always positive and has a base of 1)
-        let speedMultiplier = 1 + Math.abs(velocity / 400); 
-        
-        // Cap the max speed so it doesn't break the matrix
-        speedMultiplier = Math.min(speedMultiplier, 5); 
-
-        // Smoothly accelerate the marquee timelines
-        gsap.to([tl1, tl2], { 
-          timeScale: speedMultiplier, 
-          duration: 0.2, 
-          ease: 'power1.out', 
-          overwrite: 'auto' 
-        });
-
-        // Clear previous timeout and set a new one to decelerate back to normal
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-          gsap.to([tl1, tl2], { 
-            timeScale: 1, 
-            duration: 1, 
-            ease: 'power3.out' 
-          });
-        }, 100);
+    gsap.fromTo(
+      '.skills-header-right',
+      { x: 25, opacity: 0 },
+      {
+        x: 0,
+        opacity: 1,
+        duration: 0.6,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.skills-header-left',
+          start: 'top 94%',
+          once: true,
+        },
       }
-    });
+    );
 
-    // 3. The "Focus" Hover Effect (Slow down the whole container when mouse enters)
-    const container = containerRef.current;
-    
-    const handleMouseEnter = () => {
-      gsap.to([tl1, tl2], { timeScale: 0.15, duration: 0.8, ease: "power2.out" });
-    };
-    
-    const handleMouseLeave = () => {
-      gsap.to([tl1, tl2], { timeScale: 1, duration: 0.8, ease: "power2.out" });
-    };
+    // 2. Category tabs tray entrance
+    gsap.fromTo(
+      '.category-tabs-container',
+      { y: 15, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.category-tabs-container',
+          start: 'top 94%',
+          once: true,
+        },
+      }
+    );
 
-    container.addEventListener("mouseenter", handleMouseEnter);
-    container.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      container.removeEventListener("mouseenter", handleMouseEnter);
-      container.removeEventListener("mouseleave", handleMouseLeave);
-      clearTimeout(scrollTimeout);
-    };
-
+    // 3. Radar cards: 1-by-1 cascade from Left to Right on initial scroll
+    gsap.fromTo(
+      '.radar-card',
+      { x: -50, opacity: 0 },
+      {
+        x: 0,
+        opacity: 1,
+        duration: 0.6,
+        stagger: 0.14,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.radar-cards-grid',
+          start: 'top 92%',
+          once: true,
+        },
+      }
+    );
   }, { scope: containerRef });
 
-  // Upgraded Item: Handles the dimming effect via CSS group-hover
-  const MarqueeItem = ({ text, filled }) => (
-    <div className="flex items-center group/item transition-opacity duration-500">
-      <span className={`text-6xl md:text-8xl lg:text-9xl font-black uppercase tracking-tighter cursor-default transition-all duration-300
-        ${filled 
-          ? "text-zinc-800 hover:text-emerald-500" 
-          : "text-transparent [-webkit-text-stroke:2px_#3f3f46] hover:[-webkit-text-stroke:2px_#10b981]"
-        }`}
-      >
-        {text}
-      </span>
-      <SparkleDivider />
-    </div>
-  );
-
   return (
-    // Added 'group' class to the container to manage sibling dimming
-    <section ref={containerRef} className="py-32 bg-zinc-950 overflow-hidden relative group" id='skills'>
+    <section ref={containerRef} id="radar" className="pt-12 pb-24 px-6 sm:px-12 max-w-7xl mx-auto overflow-hidden">
       
-      {/* Decorative gradient masks */}
-      <div className="absolute top-0 left-0 w-32 md:w-64 h-full bg-linear-to-r from-zinc-950 to-transparent z-10 pointer-events-none" />
-      <div className="absolute top-0 right-0 w-32 md:w-64 h-full bg-linear-to-l from-zinc-950 to-transparent z-10 pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-6 mb-16 skills-header relative z-20">
-        <h2 className="text-emerald-500 font-mono text-sm tracking-widest uppercase flex items-center gap-4">
-          <span className="w-8 h-px bg-emerald-500" />
-          The Arsenal
-        </h2>
+      {/* SECTION HEADER (Opposing horizontal entrance) */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 pb-6 border-b border-white/5">
+        <div className="skills-header-left">
+          <span className="font-mono text-xs uppercase tracking-widest text-zinc-400 block mb-2">
+            ENGINEERING CAPABILITIES
+          </span>
+          <h2 className="text-4xl sm:text-5xl font-medium text-zinc-100 tracking-tight">
+            TECHNICAL <span className="text-zinc-500">RADAR</span>.
+          </h2>
+        </div>
+        <p className="skills-header-right mt-4 md:mt-0 font-mono text-xs text-zinc-400 max-w-md">
+          A pragmatic architecture matrix of production-proven technologies, frameworks, and concurrency tools.
+        </p>
       </div>
 
-      {/* Dim all items when hovering over the container, EXCEPT the one being directly hovered */}
-      <div className="flex flex-col gap-8 md:gap-12 -rotate-2 scale-105 hover:[&_.group\/item]:opacity-30 [&_.group\/item:hover]:opacity-100 transition-opacity duration-500">
-        
-        <div className="marquee-row-1 flex w-max">
-          <div className="flex items-center">
-            {topRow.map((skill, i) => <MarqueeItem key={`t1-${i}`} text={skill} filled={i % 2 === 0} />)}
-          </div>
-          <div className="flex items-center">
-            {topRow.map((skill, i) => <MarqueeItem key={`t2-${i}`} text={skill} filled={i % 2 === 0} />)}
-          </div>
-        </div>
+      {/* CATEGORY SWITCHER TABS (Morphing Sliding Pill Tray) */}
+      <div className="category-tabs-container relative inline-flex flex-wrap gap-1.5 mb-8 p-1.5 bg-zinc-950/80 border border-zinc-800 rounded-2xl">
+        {/* Physical Sliding Pill Indicator */}
+        <span
+          ref={indicatorRef}
+          className="absolute bg-zinc-100 rounded-xl shadow-md pointer-events-none z-0 opacity-0 will-change-transform"
+          style={{ top: 0, left: 0 }}
+        />
 
-        <div className="marquee-row-2 flex w-max">
-          <div className="flex items-center">
-            {bottomRow.map((skill, i) => <MarqueeItem key={`b1-${i}`} text={skill} filled={i % 2 !== 0} />)}
-          </div>
-          <div className="flex items-center">
-            {bottomRow.map((skill, i) => <MarqueeItem key={`b2-${i}`} text={skill} filled={i % 2 !== 0} />)}
-          </div>
-        </div>
-
+        {skillsMatrix.map((cat, idx) => {
+          const isActive = activeCategory === idx;
+          return (
+            <button
+              key={idx}
+              ref={(el) => (tabRefs.current[idx] = el)}
+              onClick={() => handleTabChange(idx)}
+              className={`category-tab-btn relative px-4 py-2 rounded-xl font-mono text-xs transition-colors duration-200 z-10 cursor-pointer select-none ${
+                isActive
+                  ? 'text-zinc-950 font-semibold'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              {cat.category.split('.')[1] || cat.category}
+            </button>
+          );
+        })}
       </div>
+
+      {/* ACTIVE CATEGORY DETAILS */}
+      <div className="bg-zinc-900/60 rounded-3xl p-6 sm:p-8 mb-8 border border-zinc-800 shadow-xl">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-white/5">
+          <div className="category-header-info will-change-transform">
+            <h3 className="text-xl font-medium text-zinc-100 mb-1">
+              {skillsMatrix[activeCategory].category}
+            </h3>
+            <p className="font-mono text-xs text-zinc-400">
+              {skillsMatrix[activeCategory].description}
+            </p>
+          </div>
+          <span className="font-mono text-xs text-zinc-500 bg-zinc-950 px-3 py-1 rounded-full border border-zinc-800">
+            {skillsMatrix[activeCategory].items.length} MODULES LOADED
+          </span>
+        </div>
+
+        {/* RADAR CARDS (Left-to-Right Cascading Grid) */}
+        <div ref={cardsGridRef} className="radar-cards-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {skillsMatrix[activeCategory].items.map((item, idx) => (
+            <div
+              key={idx}
+              className="radar-card bg-zinc-950/80 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/40 p-5 rounded-2xl transition-colors duration-300 group flex flex-col justify-between will-change-transform"
+            >
+              <div>
+                <h4 className="text-sm font-medium text-zinc-200 group-hover:text-zinc-100 transition-colors mb-2">
+                  {item.name}
+                </h4>
+                <p className="text-xs text-zinc-400 font-mono leading-relaxed">
+                  {item.note}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
     </section>
   );
 };

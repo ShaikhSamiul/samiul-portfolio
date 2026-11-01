@@ -1,138 +1,180 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
-/* @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap'); */
-/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Syne:wght@400..800&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300..700;1,300..700&family=Jost:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-space: "Space Grotesk", sans-serif;
-  /* --font-jb: "JetBrains Mono", monospace; */
-  /* --font-syne: "Syne", sans-serif; */
-  /* --font-inter: "Inter", sans-serif; */
+  --font-jost: "Jost", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-space: "Jost", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-syne: "Syne", sans-serif;
 }
-/* Base styles for smooth background rendering */
-body {
-  background-color: #0a0a0a;
-  color: #f5f5f5;
+
+/* =========================================
+   BASE STYLES & LUXURY OBSIDIAN CANVAS
+   ========================================= */
+
+/* 1. PRISMATIC (Default) */
+:root, [data-theme="prismatic"] {
+  --color-canvas: #09090b;
+  --color-surface: #121316;
+  --color-surface-hover: #18191f;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(16, 185, 129, 0.35);
+  --color-primary: #10b981;
+  --color-primary-glow: rgba(16, 185, 129, 0.16);
+  --color-secondary: #06b6d4;
+  --color-tertiary: #f59e0b;
+  --hero-name-accent: #34d399;
+}
+
+/* 2. ELECTRIC INDIGO & CYBER VIOLET (Linear / Raycast) */
+[data-theme="indigo"] {
+  --color-canvas: #08080c;
+  --color-surface: #0e0f19;
+  --color-surface-hover: #161828;
+  --color-border: rgba(139, 92, 246, 0.14);
+  --color-border-hover: rgba(139, 92, 246, 0.45);
+  --color-primary: #8b5cf6;
+  --color-primary-glow: rgba(139, 92, 246, 0.22);
+  --color-secondary: #6366f1;
+  --color-tertiary: #ec4899;
+  --hero-name-accent: #a78bfa;
+}
+
+/* 3. CYBER MATRIX & EMERALD TELEMETRY (Hacker HUD / AI) */
+[data-theme="matrix"] {
+  --color-canvas: #040805;
+  --color-surface: #08120b;
+  --color-surface-hover: #0e1e12;
+  --color-border: rgba(0, 240, 138, 0.14);
+  --color-border-hover: rgba(0, 240, 138, 0.5);
+  --color-primary: #00f08a;
+  --color-primary-glow: rgba(0, 240, 138, 0.22);
+  --color-secondary: #10b981;
+  --color-tertiary: #ff9f1c;
+  --hero-name-accent: #00f08a;
+}
+
+/* 4. MIDNIGHT COBALT & HYPER CYAN (Cloud Systems) */
+[data-theme="cobalt"] {
+  --color-canvas: #020712;
+  --color-surface: #081126;
+  --color-surface-hover: #0e1c3d;
+  --color-border: rgba(0, 229, 255, 0.14);
+  --color-border-hover: rgba(0, 229, 255, 0.45);
+  --color-primary: #00e5ff;
+  --color-primary-glow: rgba(0, 229, 255, 0.22);
+  --color-secondary: #3b82f6;
+  --color-tertiary: #facc15;
+  --hero-name-accent: #38bdf8;
+}
+
+html {
+  background-color: var(--color-canvas);
+  color: #f4f4f5;
+  font-family: var(--font-jost);
+  font-weight: 400;
   overflow-x: hidden;
-  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="%2310b981" stroke-width="2"/></svg>') 12 12, auto;
-  font-family: var(--font-space);
+  transition: background-color 0.4s ease;
 }
 
-/* 2. GENERAL LINKS: 32px slightly filled emerald circle */
+body {
+  background-color: var(--color-canvas);
+  color: #f4f4f5;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.4s ease;
+  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4" fill="%2310b981"/><circle cx="12" cy="12" r="9" stroke="%2310b981" stroke-width="1.2" stroke-opacity="0.6"/></svg>') 12 12, auto;
+}
+
+[data-theme="indigo"] body {
+  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4" fill="%238b5cf6"/><circle cx="12" cy="12" r="9" stroke="%238b5cf6" stroke-width="1.2" stroke-opacity="0.6"/></svg>') 12 12, auto;
+}
+
+[data-theme="matrix"] body {
+  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4" fill="%2300f08a"/><circle cx="12" cy="12" r="9" stroke="%2300f08a" stroke-width="1.2" stroke-opacity="0.6"/></svg>') 12 12, auto;
+}
+
+[data-theme="cobalt"] body {
+  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4" fill="%2300e5ff"/><circle cx="12" cy="12" r="9" stroke="%2300e5ff" stroke-width="1.2" stroke-opacity="0.6"/></svg>') 12 12, auto;
+}
+
+/* Subtle Architectural Grid Pattern */
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+.bg-dot-pattern {
+  background-size: 24px 24px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+}
+
+/* Glassmorphism Surface */
+.glass-panel {
+  background: rgba(18, 19, 22, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+}
+
+.glass-panel:hover {
+  border-color: var(--color-border-hover);
+}
+
+/* =========================================
+   CUSTOM HUD CURSORS (Zero-Lag Native CSS)
+   ========================================= */
+
+/* Interactive Links & Buttons */
 a, button, [role="button"] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="32" height="32" viewBox="0 0 32 32" fill="rgba(16, 185, 129, 0.15)" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="14" stroke="%2310b981" stroke-width="2"/></svg>') 16 16, pointer !important;
+  cursor: url('data:image/svg+xml;utf8,<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" fill="rgba(16,185,129,0.15)" stroke="%2310b981" stroke-width="1.5"/><circle cx="16" cy="16" r="3" fill="%2310b981"/></svg>') 16 16, pointer !important;
 }
 
-/* 3. VIDEO HOVER: Cinematic HUD Target with Play Button (64px) */
-.video-content, video {
-  cursor: url('data:image/svg+xml;utf8,<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="30" fill="rgba(16, 185, 129, 0.2)" stroke="%2310b981" stroke-width="1.5" stroke-dasharray="4 4"/><path d="M26 20L44 32L26 44V20Z" fill="%2310b981"/></svg>') 32 32, pointer !important;
+/* Video Elements: Precision HUD Reticle */
+video, .video-trigger {
+  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="20" stroke="%2310b981" stroke-width="1.5" stroke-dasharray="3 3"/><circle cx="24" cy="24" r="5" fill="%2310b981"/><path d="M22 18L30 24L22 30V18Z" fill="%23ffffff"/></svg>') 24 24, pointer !important;
 }
 
-/* 4. GITHUB HOVER: Glowing Code Brackets < / > (48px) */
+/* GitHub links */
 a[href*="github.com"] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="40" height="40" rx="8" fill="rgba(16, 185, 129, 0.15)" stroke="%2310b981" stroke-width="2"/><path d="M18 16L10 24L18 32M30 16L38 24L30 32M26 12L22 36" stroke="%2310b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>') 24 24, pointer !important;
+  cursor: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="32" height="32" rx="8" fill="rgba(16,185,129,0.12)" stroke="%2310b981" stroke-width="1.5"/><path d="M15 14L10 20L15 26M25 14L30 20L25 26M22 12L18 28" stroke="%2310b981" stroke-width="2" stroke-linecap="round"/></svg>') 20 20, pointer !important;
 }
 
-/* 5. LINKEDIN HOVER: Interconnected Network Nodes (48px) */
-a[href*="linkedin.com"] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="22" fill="rgba(16, 185, 129, 0.15)" stroke="%2310b981" stroke-width="2"/><circle cx="24" cy="14" r="4" fill="%2310b981"/><circle cx="14" cy="30" r="4" fill="%2310b981"/><circle cx="34" cy="30" r="4" fill="%2310b981"/><path d="M22 17L16 27M26 17L32 27M17 30H31" stroke="%2310b981" stroke-width="2"/></svg>') 24 24, pointer !important;
-}
-
-/* 6. EMAIL HOVER: Origami Paper Airplane (48px) */
+/* Email triggers */
 a[href^="mailto:"] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="22" fill="rgba(16, 185, 129, 0.15)" stroke="%2310b981" stroke-width="2"/><path d="M14 24L34 14L24 34L21 27L14 24Z" fill="%2310b981" stroke="%2310b981" stroke-width="2" stroke-linejoin="round"/><path d="M21 27L34 14" stroke="%2399f6e4" stroke-width="1.5"/></svg>') 24 24, pointer !important;
+  cursor: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="rgba(16,185,129,0.12)" stroke="%2310b981" stroke-width="1.5"/><path d="M11 20L29 11L20 29L17 22L11 20Z" fill="%2310b981"/></svg>') 20 20, pointer !important;
 }
 
-/* =========================================
-   TECH STACK CURSORS (Floating Icons)
-   ========================================= */
-
-/* 0. GENERIC FALLBACK: Glowing Brackets */
-@media (hover: hover) and (pointer: fine) {
-li[data-tech] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="10 10 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 18L14 24L20 30M28 18L34 24L28 30" stroke="%2310b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>') 24 24, pointer !important;
+/* Tactile Active Mousedown */
+a:active, button:active {
+  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="%2310b981" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8"/></svg>') 12 12, pointer !important;
 }
 
-/* 1. REACT: Cyan Atom (Kept exactly as you had it) */
-li[data-tech="react"] {
-  cursor: url("data:image/svg+xml,%3Csvg viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18.6789 15.9759C18.6789 14.5415 17.4796 13.3785 16 13.3785C14.5206 13.3785 13.3211 14.5415 13.3211 15.9759C13.3211 17.4105 14.5206 18.5734 16 18.5734C17.4796 18.5734 18.6789 17.4105 18.6789 15.9759Z' fill='%2353C1DE'%3E%3C/path%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M24.7004 11.1537C25.2661 8.92478 25.9772 4.79148 23.4704 3.39016C20.9753 1.99495 17.7284 4.66843 16.0139 6.27318C14.3044 4.68442 10.9663 2.02237 8.46163 3.42814C5.96751 4.82803 6.73664 8.8928 7.3149 11.1357C4.98831 11.7764 1 13.1564 1 15.9759C1 18.7874 4.98416 20.2888 7.29698 20.9289C6.71658 23.1842 5.98596 27.1909 8.48327 28.5877C10.9973 29.9932 14.325 27.3945 16.0554 25.7722C17.7809 27.3864 20.9966 30.0021 23.4922 28.6014C25.9956 27.1963 25.3436 23.1184 24.7653 20.8625C27.0073 20.221 31 18.7523 31 15.9759C31 13.1835 26.9903 11.7923 24.7004 11.1537ZM24.4162 19.667C24.0365 18.5016 23.524 17.2623 22.8971 15.9821C23.4955 14.7321 23.9881 13.5088 24.3572 12.3509C26.0359 12.8228 29.7185 13.9013 29.7185 15.9759C29.7185 18.07 26.1846 19.1587 24.4162 19.667ZM22.85 27.526C20.988 28.571 18.2221 26.0696 16.9478 24.8809C17.7932 23.9844 18.638 22.9422 19.4625 21.7849C20.9129 21.6602 22.283 21.4562 23.5256 21.1777C23.9326 22.7734 24.7202 26.4763 22.85 27.526ZM9.12362 27.5111C7.26143 26.47 8.11258 22.8946 8.53957 21.2333C9.76834 21.4969 11.1286 21.6865 12.5824 21.8008C13.4123 22.9332 14.2816 23.9741 15.1576 24.8857C14.0753 25.9008 10.9945 28.557 9.12362 27.5111ZM2.28149 15.9759C2.28149 13.874 5.94207 12.8033 7.65904 12.3326C8.03451 13.5165 8.52695 14.7544 9.12123 16.0062C8.51925 17.2766 8.01977 18.5341 7.64085 19.732C6.00369 19.2776 2.28149 18.0791 2.28149 15.9759ZM9.1037 4.50354C10.9735 3.45416 13.8747 6.00983 15.1159 7.16013C14.2444 8.06754 13.3831 9.1006 12.5603 10.2265C11.1494 10.3533 9.79875 10.5569 8.55709 10.8297C8.09125 9.02071 7.23592 5.55179 9.1037 4.50354ZM20.3793 11.5771C21.3365 11.6942 22.2536 11.85 23.1147 12.0406C22.8562 12.844 22.534 13.6841 22.1545 14.5453C21.6044 13.5333 21.0139 12.5416 20.3793 11.5771ZM16.0143 8.0481C16.6054 8.66897 17.1974 9.3623 17.7798 10.1145C16.5985 10.0603 15.4153 10.0601 14.234 10.1137C14.8169 9.36848 15.414 8.67618 16.0143 8.0481ZM9.8565 14.5444C9.48329 13.6862 9.16398 12.8424 8.90322 12.0275C9.75918 11.8418 10.672 11.69 11.623 11.5748C10.9866 12.5372 10.3971 13.5285 9.8565 14.5444ZM11.6503 20.4657C10.6679 20.3594 9.74126 20.2153 8.88556 20.0347C9.15044 19.2055 9.47678 18.3435 9.85796 17.4668C10.406 18.4933 11.0045 19.4942 11.6503 20.4657ZM16.0498 23.9915C15.4424 23.356 14.8365 22.6531 14.2448 21.8971C15.4328 21.9423 16.6231 21.9424 17.811 21.891C17.2268 22.6608 16.6369 23.3647 16.0498 23.9915ZM22.1667 17.4222C22.5677 18.3084 22.9057 19.1657 23.1742 19.9809C22.3043 20.1734 21.3652 20.3284 20.3757 20.4435C21.015 19.4607 21.6149 18.4536 22.1667 17.4222ZM18.7473 20.5941C16.9301 20.72 15.1016 20.7186 13.2838 20.6044C12.2509 19.1415 11.3314 17.603 10.5377 16.0058C11.3276 14.4119 12.2404 12.8764 13.2684 11.4158C15.0875 11.2825 16.9178 11.2821 18.7369 11.4166C19.7561 12.8771 20.6675 14.4086 21.4757 15.9881C20.6771 17.5812 19.7595 19.1198 18.7473 20.5941ZM22.8303 4.4666C24.7006 5.51254 23.8681 9.22726 23.4595 10.8426C22.2149 10.5641 20.8633 10.3569 19.4483 10.2281C18.6239 9.09004 17.7698 8.05518 16.9124 7.15949C18.1695 5.98441 20.9781 3.43089 22.8303 4.4666Z' fill='%2353C1DE'%3E%3C/path%3E%3C/svg%3E") 16 16, pointer !important;
-}
-
-/* 2. NODE.JS: Green Hexagon with 'js' */
-li[data-tech="node.js"] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="10 10 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 14L34 19.5V30.5L24 36L14 30.5V19.5L24 14Z" fill="rgba(51, 153, 51, 0.2)" stroke="%23339933" stroke-width="2"/><text x="24" y="28" font-family="monospace" font-size="12" font-weight="bold" fill="%23339933" text-anchor="middle">js</text></svg>') 24 24, pointer !important;
-}
-
-/* 3. PYTHON: Yellow/Blue Track */
-li[data-tech="python"] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="12 12 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 20H26C28.2 20 30 21.8 30 24V28" stroke="%23FFD43B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 28H22C19.8 28 18 26.2 18 24V20" stroke="%233776AB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="17" r="1.5" fill="%23FFD43B"/><circle cx="27" cy="31" r="1.5" fill="%233776AB"/></svg>') 24 24, pointer !important;
-}
-
-/* 4. FASTAPI: Teal Lightning Bolt */
-li[data-tech="fastapi"] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="12 12 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M26 14L16 28H24L22 36L32 22H24L26 14Z" fill="%23009688" stroke="%23009688" stroke-width="1.5" stroke-linejoin="round"/></svg>') 24 24, pointer !important;
-}
-
-/* 5. GEMINI: Google AI Sparkle */
-li[data-tech="gemini"] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="12 12 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 14C24 19.5228 19.5228 24 14 24C19.5228 24 24 28.4772 24 34C24 28.4772 28.4772 24 34 24C28.4772 24 24 19.5228 24 14Z" fill="%238A2BE2"/></svg>') 24 24, pointer !important;
-}
-
-/* 6. PINECONE: Vector Database Triangle */
-li[data-tech="pinecone"] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="12 12 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 14L34 20L24 26L14 20L24 14Z" fill="rgba(59,130,246,0.3)" stroke="%233B82F6" stroke-width="1.5" stroke-linejoin="round"/><path d="M14 20V32L24 38V26" fill="none" stroke="%233B82F6" stroke-width="1.5" stroke-linejoin="round"/><path d="M34 20V32L24 38" fill="none" stroke="%233B82F6" stroke-width="1.5" stroke-linejoin="round"/><circle cx="24" cy="26" r="1.5" fill="%2360A5FA"/></svg>') 24 24, pointer !important;
-}
-
-/* 7. MONGODB: Green Leaf */
-li[data-tech="mongodb"] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="12 12 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 14C24 14 16 18 16 26C16 31 20 34 24 38C28 34 32 31 32 26C32 18 24 14 24 14Z" fill="rgba(71,162,72,0.3)" stroke="%2347A248" stroke-width="1.5" stroke-linejoin="round"/><path d="M24 14V38" stroke="%2347A248" stroke-width="1.5"/></svg>') 24 24, pointer !important;
-}
-
-/* 8. EXPRESS: Minimalist 'ex' */
-li[data-tech="express"] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="10 10 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="24" y="30" font-family="monospace" font-size="20" font-style="italic" font-weight="bold" fill="%23FFFFFF" text-anchor="middle">ex</text></svg>') 24 24, pointer !important;
-}
-
-/* 9. WEBSOCKETS: Two-Way Connection */
-li[data-tech="websockets"] {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="10 10 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="24" r="3" fill="%23EAB308"/><circle cx="32" cy="24" r="3" fill="%23EAB308"/><path d="M18 20H30L26 16M30 28H18L22 32" stroke="%23EAB308" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>') 24 24, pointer !important;
-}
-}
-
-/* =========================================
-   TACTILE CLICK FEEDBACK (Mousedown state)
-   ========================================= */
-
-/* When clicking ANY link or button: Shrinks and fills solid emerald */
-a:active, button:active, [role="button"]:active {
-  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="%2310b981" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"/></svg>') 12 12, pointer !important;
-}
-
-/* When clicking a Video: The HUD target snaps tight */
-.video-content:active, video:active {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="20" fill="rgba(16, 185, 129, 0.4)" stroke="%2310b981" stroke-width="2"/><path d="M20 16L34 24L20 32V16Z" fill="%2310b981"/></svg>') 24 24, pointer !important;
-}
-
-/* =========================================
-   BRANDED TEXT SELECTION & I-BEAM
-   ========================================= */
-
-/* Change the highlight color when they drag over text */
+/* Text Selection */
 ::selection {
-  background-color: rgba(16, 185, 129, 0.3); /* Transparent emerald */
+  background-color: rgba(16, 185, 129, 0.35);
   color: #ffffff;
 }
 
-/* Custom Emerald I-Beam Cursor for all text elements */
-p, h1, h2, h3, h4, h5, h6, span {
-  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4V20M8 4H16M8 20H16" stroke="%2310b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>') 12 12, text;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-/* =========================================
-   THE EASTER EGG (Name Hover)
-   ========================================= */
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
 
-/* Transforms into a glowing Crown when hovering over your name */
-.name-hover:hover {
-  cursor: url('data:image/svg+xml;utf8,<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 34L14 14L24 24L34 14L38 34H10Z" fill="rgba(16, 185, 129, 0.2)" stroke="%2310b981" stroke-width="2" stroke-linejoin="round"/><circle cx="14" cy="14" r="3" fill="%2310b981"/><circle cx="24" cy="24" r="3" fill="%2310b981"/><circle cx="34" cy="14" r="3" fill="%2310b981"/></svg>') 24 24, crosshair !important;
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
 }
