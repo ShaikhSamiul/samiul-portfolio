@@ -18,7 +18,7 @@ const Hero = ({ isLoaded }) => {
     if (!isLoaded) {
       // Keep initial hidden state ready for entrance
       gsap.set(
-        ['.hero-top-left', '.hero-monument-line', '.hero-lead', '.hero-tag', '.hero-action-left', '.hero-action-right'],
+        ['.hero-top-left', '.hero-monument-line', '.hero-lead', '.hero-action-left', '.hero-action-right'],
         { opacity: 0 }
       );
       return;
@@ -40,11 +40,6 @@ const Hero = ({ isLoaded }) => {
       { y: 20, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.6 },
       '-=0.45'
-    )
-    .fromTo('.hero-tag',
-      { x: -18, opacity: 0 },
-      { x: 0, opacity: 1, duration: 0.5, stagger: 0.05 },
-      '-=0.4'
     )
     .fromTo('.hero-action-left',
       { x: -20, opacity: 0 },
@@ -193,23 +188,6 @@ const Hero = ({ isLoaded }) => {
         <p className="hero-lead mt-8 text-lg sm:text-xl md:text-2xl text-zinc-400 font-light max-w-2xl leading-relaxed">
           Full-Stack Software Engineer building resilient distributed systems, real-time architectures, and high-throughput applied AI platforms.
         </p>
-
-        {/* TELEMETRY TAGS (Horizontal cascade from left) */}
-        <div className="mt-8 flex flex-wrap gap-2.5">
-          {[
-            { label: 'CORE', value: 'React 19 • Python • FastAPI • Node' },
-            { label: 'SPECIALIZATION', value: 'RAG Pipelines & Concurrency Locks' },
-            { label: 'INDEXING', value: 'Pinecone Vector Architecture' }
-          ].map((tag, idx) => (
-            <div
-              key={idx}
-              className="hero-tag bg-zinc-900/80 border border-zinc-800 px-3.5 py-1.5 rounded-lg font-mono text-xs flex items-center gap-2"
-            >
-              <span className="text-zinc-500">{tag.label}:</span>
-              <span className="text-zinc-200">{tag.value}</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* BOTTOM ACTION BAR (Opposing left & right entrance with Magnetic Physics) */}
