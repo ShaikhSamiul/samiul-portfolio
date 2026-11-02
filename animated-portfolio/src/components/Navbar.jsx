@@ -1,9 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
 
 const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [timeString, setTimeString] = useState('');
+  const [activeSection, setActiveSection] = useState('');
   const lastScrollYRef = useRef(0);
+  const navRefs = useRef({});
+  const indicatorRef = useRef(null);
+  const activeSectionRef = useRef('');
 
   // Live IST Clock
   useEffect(() => {
@@ -24,24 +29,125 @@ const Navbar = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Directional Scroll Hide/Reveal
+  // Helper to slide or snap the indicator pill
+  const slidePill = (targetId, animate = true) => {
+    if (!indicatorRef.current) return;
+
+    if (!targetId) {
+      if (animate) {
+        gsap.to(indicatorRef.current, {
+          opacity: 0,
+          duration: 0.25,
+          ease: 'power2.out',
+          overwrite: 'auto'
+        });
+      } else {
+        gsap.set(indicatorRef.current, { opacity: 0 });
+      }
+      return;
+    }
+
+    const targetLink = navRefs.current[targetId];
+    if (!targetLink) return;
+
+    if (!animate) {
+      gsap.set(indicatorRef.current, {
+        x: targetLink.offsetLeft,
+        y: targetLink.offsetTop,
+        width: targetLink.offsetWidth,
+        height: targetLink.offsetHeight,
+        opacity: 1
+      });
+    } else {
+      gsap.to(indicatorRef.current, {
+        x: targetLink.offsetLeft,
+        y: targetLink.offsetTop,
+        width: targetLink.offsetWidth,
+        height: targetLink.offsetHeight,
+        opacity: 1,
+        duration: 0.35,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
+    }
+  };
+
+  // Sync active section to ref & slide pill
+  useEffect(() => {
+    activeSectionRef.current = activeSection;
+    slidePill(activeSection, true);
+  }, [activeSection]);
+
+  // Keep indicator aligned on font load & window resize (without animation)
+  useEffect(() => {
+    const handleSync = () => {
+      slidePill(activeSectionRef.current, false);
+    };
+
+    if (document.fonts) {
+      document.fonts.ready.then(handleSync);
+    }
+
+    window.addEventListener('resize', handleSync);
+    return () => window.removeEventListener('resize', handleSync);
+  }, []);
+
+  // Directional Scroll Hide/Reveal + Active Section Radar Tracking
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY < 60) {
+      const scrollY = window.scrollY;
+
+      // 1. Hide/Reveal navbar
+      if (scrollY < 60) {
         setIsVisible(true);
       } else {
-        setIsVisible(currentScrollY <= lastScrollYRef.current);
+        setIsVisible(scrollY <= lastScrollYRef.current);
       }
-      lastScrollYRef.current = currentScrollY;
+      lastScrollYRef.current = scrollY;
+
+      // 2. Active Section Radar Tracking
+      const sections = ['work', 'radar', 'terminal', 'contact'];
+
+      // Lock to contact when at the bottom of the page
+      if (window.innerHeight + scrollY >= document.documentElement.scrollHeight - 80) {
+        setActiveSection('contact');
+        return;
+      }
+
+      // Hero / Top threshold (no active tab at top)
+      if (scrollY < 260) {
+        setActiveSection('');
+        return;
+      }
+
+      const viewportFocus = scrollY + window.innerHeight * 0.35;
+      let current = '';
+
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el) {
+          const top = el.offsetTop;
+          const bottom = top + el.offsetHeight;
+          if (viewportFocus >= top && viewportFocus < bottom) {
+            current = id;
+            break;
+          }
+        }
+      }
+
+      setActiveSection(current);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleNavClick = (e, targetId) => {
     e.preventDefault();
+    setActiveSection(targetId);
+    slidePill(targetId, true);
+
     if (window.__lenis) {
       window.__lenis.scrollTo(`#${targetId}`, { duration: 1.2 });
     } else {
@@ -74,23 +180,38 @@ const Navbar = () => {
           </span>
         </a>
 
-        {/* NAVIGATION LINKS */}
-        <nav className="hidden md:flex items-center gap-7 font-mono text-xs">
+        {/* NAVIGATION LINKS WITH SLIDING PILL RADAR TRACKER */}
+        <nav className="relative hidden md:flex items-center gap-1 font-mono text-xs">
+          {/* Physical Sliding Pill Highlight */}
+          <span
+            ref={indicatorRef}
+            className="absolute rounded-full bg-zinc-800/90 border border-zinc-700/80 shadow-[0_0_12px_rgba(16,185,129,0.18)] pointer-events-none z-0 opacity-0 will-change-transform"
+            style={{ top: 0, left: 0 }}
+          />
+
           {[
             { id: 'work', label: 'WORK' },
             { id: 'radar', label: 'RADAR' },
             { id: 'terminal', label: 'TERMINAL' },
             { id: 'contact', label: 'CONTACT' }
-          ].map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              onClick={(e) => handleNavClick(e, item.id)}
-              className="text-zinc-400 hover:text-zinc-100 transition-colors tracking-wider"
-            >
-              {item.label}
-            </a>
-          ))}
+          ].map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <a
+                key={item.id}
+                ref={(el) => (navRefs.current[item.id] = el)}
+                href={`#${item.id}`}
+                onClick={(e) => handleNavClick(e, item.id)}
+                className={`relative px-3.5 py-1.5 rounded-full transition-colors duration-200 tracking-wider flex items-center gap-1.5 z-10 select-none ${
+                  isActive
+                    ? 'text-zinc-100 font-semibold'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <span>{item.label}</span>
+              </a>
+            );
+          })}
         </nav>
 
         {/* TIME & RESUME */}

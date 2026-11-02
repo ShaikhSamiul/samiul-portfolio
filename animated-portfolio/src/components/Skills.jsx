@@ -6,6 +6,83 @@ import { skillsMatrix } from '../data';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const GLYPHS = '01_#@!$%*+~=?/\\<>§λ';
+
+// Kinetic Text Decryption Hook
+const useDecryptedText = (text) => {
+  const [displayText, setDisplayText] = useState(text);
+  const [isDeciphering, setIsDeciphering] = useState(false);
+  const frameRef = useRef(null);
+
+  const trigger = () => {
+    let iteration = 0;
+    const totalFrames = 12;
+    setIsDeciphering(true);
+
+    if (frameRef.current) clearInterval(frameRef.current);
+
+    frameRef.current = setInterval(() => {
+      setDisplayText(() => {
+        return text
+          .split('')
+          .map((char, index) => {
+            if (char === ' ' || char === '/' || char === '.') return char;
+            if (index < (iteration / totalFrames) * text.length) {
+              return text[index];
+            }
+            return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          })
+          .join('');
+      });
+
+      iteration += 1;
+      if (iteration > totalFrames) {
+        clearInterval(frameRef.current);
+        setDisplayText(text);
+        setIsDeciphering(false);
+      }
+    }, 20);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (frameRef.current) clearInterval(frameRef.current);
+    };
+  }, []);
+
+  return { displayText, isDeciphering, trigger };
+};
+
+// Tactical Skill Card with Decryption Trigger
+const SkillCard = ({ item }) => {
+  const { displayText, isDeciphering, trigger } = useDecryptedText(item.name);
+
+  return (
+    <div
+      onMouseEnter={trigger}
+      className="radar-card bg-zinc-950/80 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/40 p-5 rounded-2xl transition-colors duration-300 group flex flex-col justify-between will-change-transform cursor-pointer"
+    >
+      <div>
+        <h4 className="text-sm font-medium mb-2 font-mono tracking-tight flex items-center justify-between">
+          <span
+            className={`transition-colors duration-200 ${
+              isDeciphering ? 'text-emerald-400' : 'text-zinc-200 group-hover:text-zinc-100'
+            }`}
+          >
+            {displayText}
+          </span>
+          <span className="text-[10px] font-mono text-zinc-600 group-hover:text-emerald-400/80 transition-colors">
+            [SYS]
+          </span>
+        </h4>
+        <p className="text-xs text-zinc-400 font-mono leading-relaxed">
+          {item.note}
+        </p>
+      </div>
+    </div>
+  );
+};
+
 const Skills = () => {
   const containerRef = useRef(null);
   const cardsGridRef = useRef(null);
@@ -236,22 +313,10 @@ const Skills = () => {
           </span>
         </div>
 
-        {/* RADAR CARDS (Left-to-Right Cascading Grid) */}
+        {/* RADAR CARDS (Left-to-Right Cascading Grid with Kinetic Decryption) */}
         <div ref={cardsGridRef} className="radar-cards-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {skillsMatrix[activeCategory].items.map((item, idx) => (
-            <div
-              key={idx}
-              className="radar-card bg-zinc-950/80 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/40 p-5 rounded-2xl transition-colors duration-300 group flex flex-col justify-between will-change-transform"
-            >
-              <div>
-                <h4 className="text-sm font-medium text-zinc-200 group-hover:text-zinc-100 transition-colors mb-2">
-                  {item.name}
-                </h4>
-                <p className="text-xs text-zinc-400 font-mono leading-relaxed">
-                  {item.note}
-                </p>
-              </div>
-            </div>
+          {skillsMatrix[activeCategory].items.map((item) => (
+            <SkillCard key={item.name} item={item} />
           ))}
         </div>
       </div>

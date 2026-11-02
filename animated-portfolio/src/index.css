@@ -73,8 +73,8 @@ body {
    CUSTOM HUD CURSORS (Zero-Lag Native CSS)
    ========================================= */
 
-/* Interactive Links & Buttons */
-a, button, [role="button"] {
+/* Interactive Links, Buttons & Cursor-Pointer Targets */
+a, button, [role="button"], .cursor-pointer, .radar-card, .radar-card * {
   cursor: url('data:image/svg+xml;utf8,<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" fill="rgba(16,185,129,0.15)" stroke="%2310b981" stroke-width="1.5"/><circle cx="16" cy="16" r="3" fill="%2310b981"/></svg>') 16 16, pointer !important;
 }
 
@@ -94,7 +94,7 @@ a[href^="mailto:"] {
 }
 
 /* Tactile Active Mousedown */
-a:active, button:active {
+a:active, button:active, .cursor-pointer:active, .radar-card:active {
   cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="%2310b981" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8"/></svg>') 12 12, pointer !important;
 }
 
