@@ -9,11 +9,10 @@
 }
 
 /* =========================================
-   BASE STYLES & LUXURY OBSIDIAN CANVAS
+   BASE STYLES & LUXURY OBSIDIAN CANVAS (PRISMATIC)
    ========================================= */
 
-/* 1. PRISMATIC (Default) */
-:root, [data-theme="prismatic"] {
+:root {
   --color-canvas: #09090b;
   --color-surface: #121316;
   --color-surface-hover: #18191f;
@@ -26,55 +25,12 @@
   --hero-name-accent: #34d399;
 }
 
-/* 2. ELECTRIC INDIGO & CYBER VIOLET (Linear / Raycast) */
-[data-theme="indigo"] {
-  --color-canvas: #08080c;
-  --color-surface: #0e0f19;
-  --color-surface-hover: #161828;
-  --color-border: rgba(139, 92, 246, 0.14);
-  --color-border-hover: rgba(139, 92, 246, 0.45);
-  --color-primary: #8b5cf6;
-  --color-primary-glow: rgba(139, 92, 246, 0.22);
-  --color-secondary: #6366f1;
-  --color-tertiary: #ec4899;
-  --hero-name-accent: #a78bfa;
-}
-
-/* 3. CYBER MATRIX & EMERALD TELEMETRY (Hacker HUD / AI) */
-[data-theme="matrix"] {
-  --color-canvas: #040805;
-  --color-surface: #08120b;
-  --color-surface-hover: #0e1e12;
-  --color-border: rgba(0, 240, 138, 0.14);
-  --color-border-hover: rgba(0, 240, 138, 0.5);
-  --color-primary: #00f08a;
-  --color-primary-glow: rgba(0, 240, 138, 0.22);
-  --color-secondary: #10b981;
-  --color-tertiary: #ff9f1c;
-  --hero-name-accent: #00f08a;
-}
-
-/* 4. MIDNIGHT COBALT & HYPER CYAN (Cloud Systems) */
-[data-theme="cobalt"] {
-  --color-canvas: #020712;
-  --color-surface: #081126;
-  --color-surface-hover: #0e1c3d;
-  --color-border: rgba(0, 229, 255, 0.14);
-  --color-border-hover: rgba(0, 229, 255, 0.45);
-  --color-primary: #00e5ff;
-  --color-primary-glow: rgba(0, 229, 255, 0.22);
-  --color-secondary: #3b82f6;
-  --color-tertiary: #facc15;
-  --hero-name-accent: #38bdf8;
-}
-
 html {
   background-color: var(--color-canvas);
   color: #f4f4f5;
   font-family: var(--font-jost);
   font-weight: 400;
   overflow-x: hidden;
-  transition: background-color 0.4s ease;
 }
 
 body {
@@ -85,20 +41,7 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.4s ease;
   cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4" fill="%2310b981"/><circle cx="12" cy="12" r="9" stroke="%2310b981" stroke-width="1.2" stroke-opacity="0.6"/></svg>') 12 12, auto;
-}
-
-[data-theme="indigo"] body {
-  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4" fill="%238b5cf6"/><circle cx="12" cy="12" r="9" stroke="%238b5cf6" stroke-width="1.2" stroke-opacity="0.6"/></svg>') 12 12, auto;
-}
-
-[data-theme="matrix"] body {
-  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4" fill="%2300f08a"/><circle cx="12" cy="12" r="9" stroke="%2300f08a" stroke-width="1.2" stroke-opacity="0.6"/></svg>') 12 12, auto;
-}
-
-[data-theme="cobalt"] body {
-  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="4" fill="%2300e5ff"/><circle cx="12" cy="12" r="9" stroke="%2300e5ff" stroke-width="1.2" stroke-opacity="0.6"/></svg>') 12 12, auto;
 }
 
 /* Subtle Architectural Grid Pattern */

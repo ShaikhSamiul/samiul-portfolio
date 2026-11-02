@@ -15,19 +15,7 @@ gsap.registerPlugin(ScrollTrigger);
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isHeroReady, setIsHeroReady] = useState(false);
-  const [currentTheme, setCurrentTheme] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('portfolio_theme') || 'prismatic';
-    }
-    return 'prismatic';
-  });
   const lenisRef = useRef(null);
-
-  // Sync theme with DOM and localStorage
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    localStorage.setItem('portfolio_theme', currentTheme);
-  }, [currentTheme]);
 
   useEffect(() => {
     // 1. Force page to top on reload, preventing browser scroll jumps
@@ -105,7 +93,7 @@ function App() {
           onComplete={handleLoadingComplete}
         />
       )}
-      <Navbar currentTheme={currentTheme} onThemeChange={setCurrentTheme} />
+      <Navbar />
       <Hero isLoaded={isHeroReady} />
       <Projects />
       <Skills />
